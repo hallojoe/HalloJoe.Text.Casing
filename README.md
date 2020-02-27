@@ -12,6 +12,6 @@ String extension methods for detecting and converting casings.
  - .ToCamel()
  - .ToKebab()
 
-## More
+## Test
 
-Check this guy out, and see how some things work: https://github.com/hallojoe/HalloJoe.Text.Casing/blob/master/UnitTestProject1/UnitTestCasing.cs
+https://github.com/hallojoe/HalloJoe.Text.Casing/blob/master/UnitTestProject1/UnitTestCasing.cs
