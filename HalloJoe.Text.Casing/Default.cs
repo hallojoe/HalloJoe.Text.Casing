@@ -1,51 +1,42 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 
 namespace HalloJoe.Text.Casing
 {
-    [Flags] // WIP
-    public enum Case
+    public enum CaseTypes
     {
         Unknown = 0,
-        Lower = 1,
-        Upper = 2,
-        Pascal = 4,
-        Camel = 8,
-        Kebab = 16, 
-        Rat = 32 // WIP
+        Pascal = 1,
+        Camel = 2,
+        Kebab = 4, 
     }
 
     public static class Default
     {
         /// <summary>
-        /// -
+        /// A dash -
         /// </summary>
-        internal const char DASH = '-';
+        internal const char Dash = '-';
 
         /// <summary>
         /// Poor mans case detector
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static Case DetectCase(this string s)
+        public static CaseTypes DetectCase(this string s)
         {
-            // trim if posible
+            // trim
             s = s?.Trim();
             // escape?
-            if (string.IsNullOrEmpty(s))
-                return Case.Unknown;
+            if (string.IsNullOrEmpty(s)) return CaseTypes.Unknown;
             // pascal?
-            if (char.IsUpper(s[0]) && s.HasUpper())
-                return Case.Pascal;
+            if (char.IsUpper(s[0]) && s.HasUpper()) return CaseTypes.Pascal;
             // camel?
-            else if (char.IsLower(s[0]) && s.HasUpper())
-                return Case.Camel;
+            else if (char.IsLower(s[0]) && s.HasUpper()) return CaseTypes.Camel;
             // kebab?
-            else if (s.All(x => char.IsLower(x) || x.Equals(DASH)))
-                return Case.Kebab;
+            else if (s.All(x => char.IsLower(x) || x.Equals(Dash))) return CaseTypes.Kebab;
             // o_0!
-            return Case.Unknown;
+            return CaseTypes.Unknown;
         }
 
         /// <summary>
@@ -53,8 +44,7 @@ namespace HalloJoe.Text.Casing
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static bool HasUpper(this string s) => 
-            s.Any(x => char.IsUpper(x));
+        public static bool HasUpper(this string s) => s.Any(char.IsUpper);
 
         /// <summary>
         /// Is string all in upper caser? 
@@ -62,16 +52,14 @@ namespace HalloJoe.Text.Casing
         /// <param name="s">String context</param>
         /// <param name="allowEdges">Ignore non-letter chars</param>
         /// <returns></returns>
-        public static bool IsUpper(this string s, bool allowEdges = false) =>
-            s.All(x => char.IsUpper(x) || (allowEdges ? !char.IsLetter(x) : false));
+        public static bool IsUpper(this string s, bool allowEdges = false) => s.All(x => char.IsUpper(x) || (allowEdges && !char.IsLetter(x)));
 
         /// <summary>
         /// Has any lower cased chars?
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static bool HasLower(this string s) => 
-            s.Any(x => char.IsLower(x));
+        public static bool HasLower(this string s) => s.Any(char.IsLower);
 
         /// <summary>
         /// Is string all in lower case?
@@ -79,24 +67,21 @@ namespace HalloJoe.Text.Casing
         /// <param name="s">String context</param>
         /// <param name="allowEdges">Ignore non letter chars</param>
         /// <returns></returns>
-        public static bool IsLower(this string s, bool allowEdges = false) =>
-            s.All(x => char.IsLower(x) || (allowEdges ? !char.IsLetter(x) : false));
+        public static bool IsLower(this string s, bool allowEdges = false) => s.All(x => char.IsLower(x) || (allowEdges && !char.IsLetter(x)));
 
         /// <summary>
         /// Uppercase first char in string
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static string UpperFirst(this string s) => 
-            char.ToUpper(s[0]) + s.Substring(1);
+        public static string UpperFirst(this string s) => char.ToUpper(s[0]) + s.Substring(1);
 
         /// <summary>
         /// Lowercase first char in string
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static string LowerFirst(this string s) => 
-            char.ToLower(s[0]) + s.Substring(1);
+        public static string LowerFirst(this string s) => char.ToLower(s[0]) + s.Substring(1);
 
         /// <summary>
         /// Lookup sets of uppercase chars and convert to single uppercase char. Ex. "AnyAPI" will become "AnyApi"
@@ -111,18 +96,13 @@ namespace HalloJoe.Text.Casing
             // result container
             var result = new StringBuilder();
             {
-                // go!
-                foreach (var c in s.ToCharArray())
+                foreach (var c in s)
                 {
-                    // append char as lower if prev char was upper 
-                    // and current char is upper
-                    if (previousWasUpper && char.IsUpper(c))
-                        result.Append(char.ToLower(c));
-                    else
-                        // just append char, it's all good
-                        result.Append(c);
+                    // append char as lower if prev char was upper and current char is upper
+                    if (previousWasUpper && char.IsUpper(c)) result.Append(char.ToLower(c));
+                    else result.Append(c); // just append char, it's all good
                     // set previousWasUpper
-                    previousWasUpper = char.IsUpper(c) ? true : false;
+                    previousWasUpper = char.IsUpper(c);
                 }
                 // return result
                 return result.ToString();
@@ -139,24 +119,22 @@ namespace HalloJoe.Text.Casing
         {
             // escape?
             if (string.IsNullOrEmpty(s?.Trim())) return s;
-            // should bebab be normalized?
+            // should kebab be normalized?
             if (normalize) s = s.NormalizeUppers();
             // result
             var result = new StringBuilder();
             // go!
-            for (var i = 0; i < s.Length; i++)
-                // if current char is uppper then 
-                // add dash to result and then next char as lower
-                if (char.IsUpper(s[i]))
+            foreach (var t in s)
+            {
+                if (char.IsUpper(t))
                 {
-                    result.Append(DASH);
-                    result.Append(char.ToLower(s[i]));
+                    result.Append(Dash);
+                    result.Append(char.ToLower(t));
                 }
-                else
-                // just add current char
-                    result.Append(s[i]);
-            // take care of  leading dashing and return result
-            return result[0].Equals(DASH) ? result.Remove(0, 1).ToString() : result.ToString();
+                else result.Append(t); // just add current char
+            }
+            // take care of leading dash and return result
+            return result[0].Equals(Dash) ? result.Remove(0, 1).ToString() : result.ToString();
         }
 
         /// <summary>
@@ -168,33 +146,32 @@ namespace HalloJoe.Text.Casing
         {
             // escape?
             if (string.IsNullOrEmpty(s?.Trim())) return s;
+            
             // detect case
             var detectedCase = s.DetectCase();
+            
             // is pascal?
-            if (detectedCase.Equals(Case.Pascal))
-                return s;
+            if (detectedCase.Equals(CaseTypes.Pascal)) return s;
+
             // is camel?
-            else if (detectedCase.Equals(Case.Camel))
-                return s.UpperFirst();
+            if (detectedCase.Equals(CaseTypes.Camel)) return s.UpperFirst();
+            
             // is kebab?
-            else if (detectedCase.Equals(Case.Kebab))
+            if (detectedCase.Equals(CaseTypes.Kebab))
             {
                 // result
                 var result = new StringBuilder();
                 // go!
                 for (var i = 0; i < s.Length; i++)
-                    // if is dash and length of s is greater than 
-                    // current i + 1(next), then add next as upper
-                    if (s[i].Equals(DASH) && s.Length >= i + 1)
-                    {
-                        // add next as upper
-                        result.Append(char.ToUpper(s[i + 1]));
-                        // increment i
+                {
+                    // if is dash and length of s is greater than current i + 1(next), then add next as upper
+                    if (s[i].Equals(Dash) && s.Length >= i + 1)
+                    {                        
+                        result.Append(char.ToUpper(s[i + 1])); // add next as upper                        
                         i++;
                     }
-                    else
-                        // just add char
-                        result.Append(s[i]);
+                    else result.Append(s[i]); // just add char
+                }
                 // ensure upper first and return result
                 return result.ToString().UpperFirst();
             }
@@ -206,8 +183,7 @@ namespace HalloJoe.Text.Casing
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static string ToCamel(this string s) => 
-            s.ToPascal().LowerFirst();
+        public static string ToCamel(this string s) => s.ToPascal().LowerFirst();
     }
 }
 
