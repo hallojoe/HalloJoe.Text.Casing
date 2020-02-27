@@ -25,13 +25,13 @@ namespace UnitTestProject1
         public void is_lower() => Assert.AreEqual("thisislower".IsLower(), true);
 
         [TestMethod]
-        public void detect_kebab() => Assert.AreEqual("this-is-kebab".DetectCase(), Case.Kebab);
+        public void detect_kebab() => Assert.AreEqual("this-is-kebab".DetectCase(), CaseTypes.Kebab);
 
         [TestMethod]
-        public void detect_pascal() => Assert.AreEqual("ThisIsPascal".DetectCase(), Case.Pascal);
+        public void detect_pascal() => Assert.AreEqual("ThisIsPascal".DetectCase(), CaseTypes.Pascal);
 
         [TestMethod]
-        public void detect_camel() => Assert.AreEqual("thisIsCamel".DetectCase(), Case.Camel);
+        public void detect_camel() => Assert.AreEqual("thisIsCamel".DetectCase(), CaseTypes.Camel);
 
         [TestMethod]
         public void normalize_uppers() => Assert.AreEqual("IPascalToKebabAPI".NormalizeUppers(), "IpascalToKebabApi");
