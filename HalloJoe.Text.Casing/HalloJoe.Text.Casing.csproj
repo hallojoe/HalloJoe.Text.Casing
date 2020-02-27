@@ -1,18 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1.0</Version>
+    <Version>2.0.0</Version>
     <Authors>Casper Korsgaard</Authors>
     <Company>HalloJoe</Company>
-    <Description>String extension methods for detecting and converting casings.</Description>
+    <Description>Extensions for detecting and converting string casings.</Description>
     <RepositoryUrl>https://github.com/hallojoe/HalloJoe.Text.Casing.git</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/hallojoe/HalloJoe.Text.Casing</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/hallojoe/HalloJoe.Text.Casing/blob/master/LICENSE</PackageLicenseUrl>
     <PackageTags>Pascal, Camel, Kebab, Text, Casing, Case, Convert</PackageTags>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
   </PropertyGroup>
 
 </Project>
